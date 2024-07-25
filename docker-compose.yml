@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+
+  php:
+    build: ./docker/php
+    restart: unless-stopped
+    container_name: docker.php    
+    tty: true
+    expose:
+      - 9000
+    volumes:
+      - .:/var/www
+
+  apache:
+    container_name: docker.apache
+    build:
+      context: ./docker/apache            
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped    
+    tty: true
+    volumes:
+      - ./app:/var/www/app
+      # - ./certs-dev:/etc/ssl/certs-dev
+    ports:
+      - 80:80
+      # - 443:443
+      
+  # db:
+  #   container_name: db
+  #   image: mariadb:10.1.48
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: testje
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #     - db_conf:/etc/mysql
+  #   ports:
+  #     - "9906:3306"
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin-ssl
+  #   environment:
+  #     PMA_HOST: mariadb
+  #   ports:
+  #     - '8080:80'
+  #   environment:
+  #       PMA_HOST: db
+  #   depends_on:
+  #       - db
